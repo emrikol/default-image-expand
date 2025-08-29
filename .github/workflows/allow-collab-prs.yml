@@ -1,0 +1,34 @@
+# .github/workflows/allow-collab-prs.yml
+name: Allow only collaborator PRs
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  gatekeep:
+    # Personal repos: only OWNER or COLLABORATOR are allowed
+    if: ${{ !contains(fromJson('["OWNER","COLLABORATOR"]'), github.event.pull_request.author_association)
+            && github.actor != 'dependabot[bot]' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment and close PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const assoc = context.payload.pull_request.author_association;
+            const pr = context.payload.pull_request.number;
+            const { owner, repo } = context.repo;
+
+            await github.rest.issues.createComment({
+              owner, repo, issue_number: pr,
+              body: `Thanks for the contribution. This repository accepts pull requests only from collaborators. Your association: **${assoc}**.`
+            });
+
+            await github.rest.pulls.update({
+              owner, repo, pull_number: pr, state: 'closed'
+            });
