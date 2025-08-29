@@ -51,6 +51,9 @@
         ],
         "fix": [
             "@phpcbf ."
+        ],
+        "git:tag": [
+            "@php -r 'array_shift($argv); if (!isset($argv[0])) { fwrite(STDERR, \"Usage: composer git:tag -- VERSION\\n\"); exit(1);} $ver=$argv[0]; passthru(\"git tag -a \" . escapeshellarg($ver) . \" -m \" . escapeshellarg(\"Release \" . $ver)); passthru(\"git push origin \" . escapeshellarg($ver));'"        
         ]
     }
 }
