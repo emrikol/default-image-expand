@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a WordPress plugin called "Default Image Expand on Click" that automatically sets the Image block's default Link setting to "Expand on click" (core lightbox) in the Block Editor. The plugin is a single-file WordPress plugin written in PHP.
+This is a WordPress plugin called "Default Image Enlarge on click" that automatically sets the Image block's default Link setting to "Enlarge on click" (core lightbox) in the Block Editor. The plugin is a single-file WordPress plugin written in PHP.
 
 ## Architecture
 

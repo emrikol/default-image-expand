@@ -1,9 +1,9 @@
 {
     "name": "emrikol/default-image-expand",
-    "description": "WordPress plugin that sets the Image block's default Link setting to 'Expand on click' (core lightbox) in the Block Editor",
+    "description": "WordPress plugin that sets the Image block's default Link setting to 'Enlarge on click' (core lightbox) in the Block Editor",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "authors": [
         {
             "name": "Your Name",
@@ -53,7 +53,10 @@
             "@phpcbf ."
         ],
         "git:tag": [
-            "@php -r 'array_shift($argv); if (!isset($argv[0])) { fwrite(STDERR, \"Usage: composer git:tag -- VERSION\\n\"); exit(1);} $ver=$argv[0]; passthru(\"git tag -a \" . escapeshellarg($ver) . \" -m \" . escapeshellarg(\"Release \" . $ver)); passthru(\"git push origin \" . escapeshellarg($ver));'"        
+            "@php -r 'array_shift($argv); if (!isset($argv[0])) { fwrite(STDERR, \"Usage: composer git:tag -- VERSION\\n\"); exit(1);} $ver=$argv[0]; passthru(\"git tag -a \" . escapeshellarg($ver) . \" -m \" . escapeshellarg(\"Release \" . $ver)); passthru(\"git push origin \" . escapeshellarg($ver));'"
+        ],
+        "git:release": [
+            "@php -r 'array_shift($argv); if (!isset($argv[0])) { fwrite(STDERR, \"Usage: composer git:release -- TAG [TITLE]\\n\"); exit(1);} $tag=$argv[0]; $title=$argv[1] ?? (\"Release \".$tag); $remote=trim(shell_exec(\"git config --get remote.origin.url\")); if (!$remote) { fwrite(STDERR, \"Cannot determine remote.origin.url\\n\"); exit(1);} $repo=null; if (preg_match(\"~github\\.com[:/](.+?)(?:\\.git)?$~\", $remote, $m)) { $repo=$m[1]; } if (!$repo) { fwrite(STDERR, \"Unsupported remote URL: $remote\\n\"); exit(1);} $token=getenv(\"GITHUB_TOKEN\") ?: getenv(\"GH_TOKEN\"); if (!$token) { fwrite(STDERR, \"Set GITHUB_TOKEN (or GH_TOKEN) with repo scope.\\n\"); exit(1);} $data=[\"tag_name\"=>$tag, \"name\"=>$title, \"generate_release_notes\"=>true]; $ctx=stream_context_create([\"http\"=>[\"method\"=>\"POST\",\"header\"=>\"Authorization: token $token\\r\\nAccept: application/vnd.github+json\\r\\nUser-Agent: composer-release-script\\r\\nContent-Type: application/json\\r\\n\",\"content\"=>json_encode($data)]]); $res=@file_get_contents(\"https://api.github.com/repos/$repo/releases\", false, $ctx); $code=0; if (isset($http_response_header) && preg_match(\"~\\s(\\d{3})\\s~\", $http_response_header[0], $mm)) { $code=(int)$mm[1]; } if ($code>=200 && $code<300) { echo \"Created release $tag on $repo\\n\"; } else { fwrite(STDERR, \"GitHub API error ($code): $res\\n\"); exit(1);} '"
         ]
     }
 }

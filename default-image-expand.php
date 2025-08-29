@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: Default Image "Expand on Click"
- * Description: Sets the Image block's default Link setting to "Expand on click" (core lightbox) in the Block Editor.
- * Version: 1.0.0
+ * Plugin Name: Default Image "Enlarge on click"
+ * Description: Sets the Image block's default Link setting to "Enlarge on click" (core lightbox) in the Block Editor.
+ * Version: 1.0.1
  * Requires at least: 6.8
  * Requires PHP: 8.0
  * Author: Your Name
@@ -42,7 +42,7 @@ function deactivation_cleanup(): void {
 
 
 /**
- * Enable Image expand on click via theme.json default layer only.
+ * Enable Image Enlarge on click via theme.json default layer only.
  *
  * @param WP_Theme_JSON_Data|WP_Theme_JSON_Data_Gutenberg $theme_json Theme JSON data object.
  * @return WP_Theme_JSON_Data|WP_Theme_JSON_Data_Gutenberg Modified Theme JSON data object.
@@ -88,8 +88,8 @@ function add_user_profile_field( $user ): void {
 			<th><label for="disable_image_expand_on_click"><?php esc_html_e( 'Image Lightbox', 'default-image-expand' ); ?></label></th>
 			<td>
 				<input type="checkbox" name="disable_image_expand_on_click" id="disable_image_expand_on_click" value="1" <?php checked( $disabled, '1' ); ?> />
-				<label for="disable_image_expand_on_click"><?php esc_html_e( 'Disable "Expand on click" default for Image blocks', 'default-image-expand' ); ?></label>
-				<p class="description"><?php esc_html_e( 'When checked, Image blocks will not default to "Expand on click" lightbox behavior.', 'default-image-expand' ); ?></p>
+				<label for="disable_image_expand_on_click"><?php esc_html_e( 'Disable "Enlarge on click" default for Image blocks', 'default-image-expand' ); ?></label>
+				<p class="description"><?php esc_html_e( 'When checked, Image blocks will not default to "Enlarge on click" lightbox behavior.', 'default-image-expand' ); ?></p>
 				<?php wp_nonce_field( 'disable_image_expand_on_click_nonce', 'disable_image_expand_on_click_nonce' ); ?>
 			</td>
 		</tr>
