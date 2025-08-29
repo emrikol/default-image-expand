@@ -24,9 +24,19 @@ jobs:
             const pr = context.payload.pull_request.number;
             const { owner, repo } = context.repo;
 
+            const msg = [
+              'Thanks for your interest! This repository is published as-is under the GPL-2.0-or-later license.',
+              '',
+              'We do not provide support, and Issues are disabled. Pull requests are accepted only from collaborators explicitly added to this repository.',
+              '',
+              'If you are not a collaborator, please fork this project and continue development under the GPL. To avoid confusion, we kindly ask redistributors of modified versions to use a different project name and branding.',
+              '',
+              `Your association: **${assoc}**.`
+            ].join('\n');
+
             await github.rest.issues.createComment({
               owner, repo, issue_number: pr,
-              body: `Thanks for the contribution. This repository accepts pull requests only from collaborators. Your association: **${assoc}**.`
+              body: msg
             });
 
             await github.rest.pulls.update({
