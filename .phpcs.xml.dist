@@ -1,32 +1,32 @@
 <?xml version="1.0"?>
 <ruleset
-		name="VIP Sites"
+		name="Default Image Expand"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
-	<description>Custom ruleset for VIP sites.</description>
+	<description>Custom ruleset for the Default Image Expand plugin.</description>
 
-	<!-- Note: this file is only used for local PHPCS checks; the vip-go-ci bot does not read it.
-	To customize the bot's behavior, see https://docs.wpvip.com/how-tos/customize-the-bot/. -->
+	<!-- Self-contained root — phpcs-lint.sh stops chaining here. -->
+	<config name="phpcs-lint-root" value="true"/>
 
 	<!-- For help in understanding this file: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Annotated-ruleset.xml -->
 	<!-- For help in using PHPCS: https://github.com/squizlabs/PHP_CodeSniffer/wiki/Usage -->
-	<!-- For VIP code review items: https://docs.wpvip.com/technical-references/code-review/ -->
-	<!-- For VIP PHPCS severity levels: https://docs.wpvip.com/technical-references/vip-code-analysis-bot/phpcs-report/ -->
 
+	<!-- What to scan -->
+	<file>.</file>
 
 	<!-- Ignoring Files and Folders:
 		https://github.com/squizlabs/PHP_CodeSniffer/wiki/Advanced-Usage#ignoring-files-and-folders -->
-	<exclude-pattern>./phpcs/</exclude-pattern>
-	<exclude-pattern>./tests/</exclude-pattern>
-	<exclude-pattern>./coverage-html/</exclude-pattern>
-	<exclude-pattern>./vendor/</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/build/*</exclude-pattern>
+	<exclude-pattern>*/tests/*</exclude-pattern>
 
 	<!-- How to scan -->
 	<arg value="sp"/> <!-- Show sniff and progress -->
 	<arg name="colors"/> <!-- Show results with colors. Disable if working on Windows -->
 	<arg name="basepath" value="."/> <!-- Strip the file paths down to the relevant bit -->
 	<arg name="parallel" value="8"/> <!-- Enables parallel processing when available for faster results -->
-	<arg name="extensions" value="php"/> <!-- Limit to PHP and JS files -->
+	<arg name="extensions" value="php"/> <!-- Limit to PHP files -->
 
 	<!-- Rules: Check PHP version compatibility - see
 		https://github.com/PHPCompatibility/PHPCompatibilityWP -->
@@ -37,7 +37,9 @@
 
 	<!-- Rules: VIP Coding Standards - see
 		https://github.com/Automattic/VIP-Coding-Standards -->
-	<rule ref="WordPress-VIP-Go"/>
+	<rule ref="WordPress-VIP-Go">
+		<exclude name="WordPressVIPMinimum.JS"/>
+	</rule>
 
 	<!-- Rules: WordPress Coding Standards - see
 		https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards -->
@@ -45,35 +47,7 @@
 	<rule ref="WordPress-Docs"/>
 	<!-- For help in understanding this minimum_supported_wp_version:
 		https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Customizable-sniff-properties#setting-minimum-supported-wp-version-for-all-sniffs-in-one-go-wpcs-0140 -->
-	<config name="minimum_supported_wp_version" value="6.5"/>
-
-	<!-- For more information on customizing this file, see https://docs.wpvip.com/technical-references/vip-codebase/phpcs-xml-dist/. -->
-
-	<!-- Add in our custom text domain -->
-	<!-- For help in understanding this text_domain property:
-	https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Customizable-sniff-properties#internationalization-setting-your-text-domain -->
-	<rule ref="WordPress.WP.I18n">
-		<properties>
-			<property name="text_domain" type="array">
-				<element value="default-image-expand"/> <!-- Change this value to your theme or plugin slug. -->
-			</property>
-		</properties>
-	</rule>
-
-	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
-		<properties>
-			<property name="prefixes" type="array">
-				<element value="Default_Image_Expand"/>
-			</property>
-		</properties>
-	</rule>
-
-	<!-- Set minimum cron interval to 5 minutes -->
-	<rule ref="WordPress.WP.CronInterval">
-		<properties>
-			<property name="min_interval" value="300"/>
-		</properties>
-	</rule>
+	<config name="minimum_supported_wp_version" value="6.8"/>
 
 	<!-- Reintroduce some whitespace rules WordPressVIPMinimum removes -->
 	<rule ref="Squiz.WhiteSpace.SuperfluousWhitespace.EmptyLines">
@@ -83,24 +57,40 @@
 		<severity>5</severity>
 	</rule>
 
-	<!-- Ignore Squiz.Commenting.FileComment.MissingPackageTag -->
+	<!-- Exclude noisy sniffs -->
 	<rule ref="Squiz.Commenting.FileComment.MissingPackageTag">
-		<exclude name="Squiz.Commenting.FileComment.MissingPackageTag" />
-		<exclude name="Squiz.Commenting.FileComment.Missing" />
+		<exclude name="Squiz.Commenting.FileComment.MissingPackageTag"/>
+		<exclude name="Squiz.Commenting.FileComment.Missing"/>
 	</rule>
-
-	<!-- Ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -->
 	<rule ref="Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed">
-		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed" />
+		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed"/>
 	</rule>
 
-	<!-- Custom Sniffs -->
-	<!--rule ref="./phpcs/VIPServices/ruleset.xml"/>
-	<rule ref="VIPServices.Functions.TypeDeclaration">
+	<!-- Custom Sniffs — emrikol/phpcs -->
+	<rule ref="Emrikol"/>
+
+	<!-- WordPress presets — must come before plugin class registration so that
+		extend="true" below appends to the preset list rather than being overwritten by it. -->
+	<rule ref="vendor/emrikol/phpcs/presets/wordpress-classes.xml"/>
+	<rule ref="vendor/emrikol/phpcs/presets/wordpress-global-classes.xml"/>
+	<rule ref="vendor/emrikol/phpcs/presets/php-global-classes.xml"/>
+
+	<!-- Text domain for i18n sniffs. -->
+	<rule ref="WordPress.WP.I18n">
 		<properties>
-			<property name="custom_classes" type="array">
-				<element value="Example_Custom_Class"/>
+			<property name="text_domain" type="array">
+				<element value="default-image-expand"/>
 			</property>
 		</properties>
-	</rule-->
+	</rule>
+
+	<!-- Global function/class prefix enforcement. -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="Default_Image_Expand"/>
+			</property>
+		</properties>
+	</rule>
+
 </ruleset>

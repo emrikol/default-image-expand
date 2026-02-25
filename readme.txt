@@ -1,10 +1,10 @@
 === Default Image "Enlarge on click" ===
 Contributors: emrikol
-Tags: blocks, image, lightbox, gutenberg, expand
+Tags: blocks, image, lightbox, gutenberg, enlarge
 Requires at least: 6.8
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 1.0.1
+Stable tag: 2.0.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,12 @@ Yes! The plugin is compatible with both WordPress core and the Gutenberg plugin.
 
 == Changelog ==
 
+= 2.0.0 =
+* **Breaking change:** Renamed internal user meta key from `disable_image_expand_on_click` to `disable_image_enlarge_on_click` to align with correct Gutenberg nomenclature. Users who had previously opted out via their profile will need to re-save their preference after updating.
+* Renamed internal function `enable_image_expand_defaults_only` to `enable_image_enlarge_defaults_only`.
+* Updated dev tooling: replaced manual PHPCS setup with `emrikol/phpcs` and `dealerdirect/phpcodesniffer-composer-installer`.
+* Added full unit test suite with 100% line coverage.
+
 = 1.0.1 =
 * Update wording from "Expand on click" to "Enlarge on click" throughout README and descriptions
 
@@ -89,6 +95,9 @@ Yes! The plugin is compatible with both WordPress core and the Gutenberg plugin.
 * Clean deactivation with optional user data cleanup
 
 == Upgrade Notice ==
+
+= 2.0.0 =
+**Breaking change:** If you or your users had previously disabled the "Enlarge on click" default via the user profile, that preference will need to be re-saved after updating.
 
 = 1.0.0 =
 Initial release of the plugin.
